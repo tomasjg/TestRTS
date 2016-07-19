@@ -66,6 +66,4 @@ public class Building : WorldObject {
     {
         return currentBuildProgress / maxBuildProgress;
     }
-
-
 }
