@@ -15,6 +15,8 @@ public class WorldObject : MonoBehaviour {
     protected Bounds selectionBounds;
     protected Rect playingArea = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 
+    protected GUIStyle healthStyle = new GUIStyle();
+    protected float healthPercentage = 1.0f;
 
     protected virtual void Awake()
     {
@@ -68,13 +70,17 @@ public class WorldObject : MonoBehaviour {
         //only handle input if currently selected
         if (currentlySelected && hitObject && hitObject.name != "Ground")
         {
-
             WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
             //PARA SOLUCIONAR NullReferenceException usar esta linea en vez de la de arriba
             //WorldObject worldObject = hitObject.transform.GetComponent("WorldObject") as WorldObject;
 
             //clicked on another selectable object
-            if (worldObject) ChangeSelection(worldObject, controller);
+            if (worldObject)
+            {
+                Resource resource = hitObject.transform.parent.GetComponent<Resource>();
+                if (resource && resource.isEmpty()) return;
+                ChangeSelection(worldObject, controller);
+            }
         }
     }
 
@@ -99,9 +105,11 @@ public class WorldObject : MonoBehaviour {
     protected virtual void DrawSelectionBox(Rect selectBox)
     {
         GUI.Box(selectBox, "");
+        CalculateCurrentHealth();
+        GUI.Label(new Rect(selectBox.x, selectBox.y - 7, selectBox.width * healthPercentage, 5), "", healthStyle);
     }
 
-    /////////////// Parte 8
+    /////////////// Parte 8 ///////////////
     public virtual void SetHoverState(GameObject hoverObject)
     {
         //only handle input if owned by a human player and currently selected
@@ -111,7 +119,7 @@ public class WorldObject : MonoBehaviour {
         }
     }
 
-    /////////////// Parte 10
+    /////////////// Parte 10 ///////////////
     public bool IsOwnedBy(Player owner)
     {
         if (player && player.Equals(owner))
@@ -122,5 +130,19 @@ public class WorldObject : MonoBehaviour {
         {
             return false;
         }
+    }
+
+    /////////////// Parte 12 ///////////////
+    public Bounds GetSelectionBounds()
+    {
+        return selectionBounds;
+    }
+
+    protected virtual void CalculateCurrentHealth()
+    {
+        healthPercentage = (float)hitPoints / (float)maxHitPoints;
+        if (healthPercentage > 0.65f) healthStyle.normal.background = ResourceManager.HealthyTexture;
+        else if (healthPercentage > 0.35f) healthStyle.normal.background = ResourceManager.DamagedTexture;
+        else healthStyle.normal.background = ResourceManager.CriticalTexture;
     }
 }
