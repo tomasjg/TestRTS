@@ -82,7 +82,7 @@ public class Unit : WorldObject
         }
     }
 
-    public void StartMove(Vector3 destination)
+    public virtual void StartMove(Vector3 destination)
     {
         this.destination = destination;
         targetRotation = Quaternion.LookRotation(destination - transform.position);
@@ -152,7 +152,7 @@ public class Unit : WorldObject
         destination.y = destinationTarget.transform.position.y;
     }
 
-    public virtual void Init(Building creator)
+    public virtual void SetBuilding(Building creator)
     {
         //specific initialization for a unit can be specified here
     }

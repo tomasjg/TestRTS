@@ -182,13 +182,15 @@ public class HUD : MonoBehaviour {
         {
             //Screen.showCursor = false; //VER ESTO
             Cursor.visible = false;
-
-            GUI.skin = mouseCursorSkin;
-            GUI.BeginGroup(new Rect(0, 0, Screen.width, Screen.height));
-            UpdateCursorAnimation();
-            Rect cursorPosition = GetCursorDrawPosition();
-            GUI.Label(cursorPosition, activeCursor);
-            GUI.EndGroup();
+            if (!player.IsFindingBuildingLocation())
+            {
+                GUI.skin = mouseCursorSkin;
+                GUI.BeginGroup(new Rect(0, 0, Screen.width, Screen.height));
+                UpdateCursorAnimation();
+                Rect cursorPosition = GetCursorDrawPosition();
+                GUI.Label(cursorPosition, activeCursor);
+                GUI.EndGroup();
+            }
         }
     }
 
@@ -400,4 +402,6 @@ public class HUD : MonoBehaviour {
     {
         return activeCursorState;
     }
+
+
 }
